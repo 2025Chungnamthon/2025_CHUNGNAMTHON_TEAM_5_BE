@@ -444,11 +444,11 @@ public interface MeetingControllerSwagger {
     @Operation(
             summary = "내 모임 리스트 조회",
             description = """
-            내 모임 중에서 상태값(status)에 따라 리스트를 조회합니다.
-
-            - `approved`: 참여 중인 모임 (HOST 또는 PARTICIPATING 상태)
-            - `pending`: 가입 요청한 모임 (REQUESTED 상태)
-            """,
+                    내 모임 중에서 상태값(status)에 따라 리스트를 조회합니다.
+                    
+                    - `approved`: 참여 중인 모임 (HOST 또는 PARTICIPATING 상태)
+                    - `pending`: 가입 요청한 모임 (REQUESTED 상태)
+                    """,
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -459,33 +459,33 @@ public interface MeetingControllerSwagger {
                                     examples = @ExampleObject(
                                             name = "내 모임 리스트 예시",
                                             value = """
-                            {
-                              "timeStamp": "2025-07-26T19:00:00",
-                              "message": "Successfully retrieved my meeting list.",
-                              "data": [
-                                {
-                                  "meetingId": 1,
-                                  "status": "HOST",
-                                  "isHost": true,
-                                  "title": "천안역 커피 모임",
-                                  "description": "같이 커피 마셔요!",
-                                  "location": "MOKCHEON",
-                                  "schedule": "WEEKEND",
-                                  "imageUrl": "https://example.com/image.jpg"
-                                },
-                                {
-                                  "meetingId": 2,
-                                  "status": "PARTICIPATING",
-                                  "isHost": false,
-                                  "title": "러닝 크루",
-                                  "description": "평일 아침 러닝",
-                                  "location": "SEOBUK",
-                                  "schedule": "WEEKDAY",
-                                  "imageUrl": "https://example.com/image2.jpg"
-                                }
-                              ]
-                            }
-                            """
+                                                    {
+                                                      "timeStamp": "2025-07-26T19:00:00",
+                                                      "message": "Successfully retrieved my meeting list.",
+                                                      "data": [
+                                                        {
+                                                          "meetingId": 1,
+                                                          "status": "HOST",
+                                                          "isHost": true,
+                                                          "title": "천안역 커피 모임",
+                                                          "description": "같이 커피 마셔요!",
+                                                          "location": "MOKCHEON",
+                                                          "schedule": "WEEKEND",
+                                                          "imageUrl": "https://example.com/image.jpg"
+                                                        },
+                                                        {
+                                                          "meetingId": 2,
+                                                          "status": "PARTICIPATING",
+                                                          "isHost": false,
+                                                          "title": "러닝 크루",
+                                                          "description": "평일 아침 러닝",
+                                                          "location": "SEOBUK",
+                                                          "schedule": "WEEKDAY",
+                                                          "imageUrl": "https://example.com/image2.jpg"
+                                                        }
+                                                      ]
+                                                    }
+                                                    """
                                     )
                             )
                     ),
@@ -498,12 +498,12 @@ public interface MeetingControllerSwagger {
                                     examples = @ExampleObject(
                                             name = "잘못된 status 값",
                                             value = """
-                            {
-                              "httpStatus": "NOT_FOUND",
-                              "message": "유효하지 않은 파라미터입니다.",
-                              "timeStamp": "2025-07-26T19:01:00"
-                            }
-                            """
+                                                    {
+                                                      "httpStatus": "NOT_FOUND",
+                                                      "message": "유효하지 않은 파라미터입니다.",
+                                                      "timeStamp": "2025-07-26T19:01:00"
+                                                    }
+                                                    """
                                     )
                             )
                     )
@@ -683,7 +683,7 @@ public interface MeetingControllerSwagger {
             @PathVariable("meetingId") Long meetingId
     );
 
-    @PatchMapping("/{meetingId}")
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "모임 정보 수정",
             description = "모임 정보를 수정합니다. JWT 인증이 필요하며, 원하는 필드만 선택적으로 수정할 수 있습니다.",
@@ -729,23 +729,7 @@ public interface MeetingControllerSwagger {
             },
             security = @SecurityRequirement(name = "bearerAuth")
     )
-    @Parameter(
-            name = "Authorization",
-            description = "JWT 토큰 (Bearer 방식)",
-            required = true,
-            in = ParameterIn.HEADER,
-            schema = @Schema(type = "string", format = "jwt"),
-            example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-    )
-    @Parameter(
-            name = "meetingId",
-            description = "수정할 모임의 ID",
-            required = true,
-            in = ParameterIn.PATH,
-            schema = @Schema(type = "integer", format = "int64"),
-            example = "1"
-    )
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+    @RequestBody(
             description = "수정할 모임 정보 (필수 아님 - 일부 필드만 전송 가능)",
             required = true,
             content = @Content(
@@ -766,12 +750,29 @@ public interface MeetingControllerSwagger {
                     )
             )
     )
+    @Parameter(
+            name = "Authorization",
+            description = "JWT 토큰 (Bearer 방식)",
+            required = true,
+            in = ParameterIn.HEADER,
+            schema = @Schema(type = "string", format = "jwt"),
+            example = "Bearer your-token"
+    )
+    @Parameter(
+            name = "meetingId",
+            description = "수정할 모임의 ID (RequestPart로 전달됨)",
+            required = true,
+            in = ParameterIn.QUERY,
+            schema = @Schema(type = "string"),
+            example = "1"
+    )
     ResponseDto<UpdateMeetingResponse> updateMeeting(
             @RequestHeader("Authorization") String token,
             @RequestPart("meeting") @Valid String requestJson,
             @RequestParam(value = "image", required = false) MultipartFile image,
             @RequestPart("meetingId") String meetingId
     ) throws JsonProcessingException;
+
 
     @DeleteMapping("/{meetingId}")
     @Operation(
