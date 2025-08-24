@@ -1,0 +1,16 @@
+package com.chungnamthon.cheonon.domain.coupon.repository;
+
+import com.chungnamthon.cheonon.domain.coupon.entity.CouponUser;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface CouponUserRepository extends JpaRepository<CouponUser, Long> {
+    List<CouponUser> findByUserIdAndIsUsedFalse(Long userId);
+
+    int countByUser_Id(Long userId);
+
+    boolean existsByUserIdAndCouponId(Long userId, Long couponId);
+
+    CouponUser findByUserIdAndCouponId(Long userId, Long couponId);
+}

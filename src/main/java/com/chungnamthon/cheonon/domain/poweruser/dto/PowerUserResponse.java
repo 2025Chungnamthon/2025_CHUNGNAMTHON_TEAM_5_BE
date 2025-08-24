@@ -1,0 +1,26 @@
+package com.chungnamthon.cheonon.domain.poweruser.dto;
+
+import com.chungnamthon.cheonon.domain.poweruser.entity.PowerUser;
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@Builder
+public class PowerUserResponse {
+
+    private Long userId;
+    private String nickname;
+    private String image;
+    private Integer totalPoint;
+    private Integer ranking;
+
+    public static PowerUserResponse from(PowerUser powerUser) {
+        return PowerUserResponse.builder()
+                .userId(powerUser.getUser().getId())
+                .nickname(powerUser.getUser().getNickname())
+                .image(powerUser.getUser().getImage())
+                .totalPoint(powerUser.getTotalPoint())
+                .ranking(powerUser.getRanking())
+                .build();
+    }
+}
