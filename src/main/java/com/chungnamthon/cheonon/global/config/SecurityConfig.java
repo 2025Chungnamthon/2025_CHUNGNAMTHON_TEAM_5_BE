@@ -1,6 +1,6 @@
 package com.chungnamthon.cheonon.global.config;
 
-import com.chungnamthon.cheonon.auth.jwt.JwtFilter;
+import com.chungnamthon.cheonon.domain.auth.jwt.JwtFilter;
 import com.chungnamthon.cheonon.global.security.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
